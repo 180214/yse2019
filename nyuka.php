@@ -26,8 +26,13 @@ if (/* ③の処理を書く */){
 }
 
 //⑥データベースへ接続し、接続情報を変数に保存する
+$db['host'] = "localhost";  // DBサーバのURL
+$db['user'] = "zaiko2019_yse";  // ユーザー名
+$db['pass'] = "2019zaiko";  // ユーザー名のパスワード
+$db['dbname'] = "zaiko2019_yse";  // データベース名
 
 //⑦データベースで使用する文字コードを「UTF8」にする
+$dsn = sprintf('mysql: host=%s; dbname=%s; charset=utf8', $db['host'], $db['dbname']);
 
 //⑧POSTの「books」の値が空か判定する。空の場合はif文の中に入る。
 if(/* ⑧の処理を行う */){

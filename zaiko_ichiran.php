@@ -92,13 +92,13 @@ $st = $pdo->query("SELECT * FROM books");
 							//⑪extract変数を使用し、1レコードのデータを渡す。
 							extract($g);
 							echo "<tr id='book'>";
-							echo "<td id='check'><input type='checkbox' name='books[]'value=".."></td>";
-							echo "<td id='id'>/* ⑬IDを表示する */</td>";
-							echo "<td id='title'>/* ⑭titleを表示する */</td>";
-							echo "<td id='author'>/* ⑮authorを表示する */</td>";
-							echo "<td id='date'>/* ⑯salesDateを表示する */</td>";
-							echo "<td id='price'>/* ⑰priceを表示する */</td>";
-							echo "<td id='stock'>/* ⑱stockを表示する */</td>";
+							echo "<td id='check'><input type='checkbox' name='books[]'value=". ."></td>";
+							echo "<td id='id'><?php echo $g['id'] ?></td>";
+							echo "<td id='title'><?php echo $g['title'] ?></td>";
+							echo "<td id='author'><?php echo $g['author'] ?></td>";
+							echo "<td id='date'><?php echo $g['salesDate'] ?></td>";
+							echo "<td id='price'><?php echo $g['price'] ?></td>";
+							echo "<td id='stock'><?php echo $g['stock'] ?></td>";
 
 							echo "</tr>";
 						}
