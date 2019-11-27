@@ -9,15 +9,18 @@
 */
 
 //①セッションを開始する
-
+session_start();
 function getByid($id,$con){
 	/* 
 	 * ②書籍を取得するSQLを作成する実行する。
 	 * その際にWHERE句でメソッドの引数の$idに一致する書籍のみ取得する。
 	 * SQLの実行結果を変数に保存する。
 	 */
+$pdo = connect();
+$st = $pdo->query("SELECT * FROM books WHERE id='$id'")
 
 	//③実行した結果から1レコード取得し、returnで値を返す。
+	return $goods = $st->fetchAll();
 }
 
 function updateByid($id,$con,$total){
@@ -35,13 +38,18 @@ if (/* ⑤の処理を書く */){
 }
 
 //⑧データベースへ接続し、接続情報を変数に保存する
+$db['host'] = "localhost";  // DBサーバのURL
+$db['user'] = "zaiko2019_yse";  // ユーザー名
+$db['pass'] = "2019zaiko";  // ユーザー名のパスワード
+$db['dbname'] = "zaiko2019_yse";  // データベース名
 
 //⑨データベースで使用する文字コードを「UTF8」にする
+$dsn = sprintf('mysql: host=%s; dbname=%s; charset=utf8', $db['host'], $db['dbname']);
 
 //⑩書籍数をカウントするための変数を宣言し、値を0で初期化する
-
+$books1=0;
 //⑪POSTの「books」から値を取得し、変数に設定する。
-foreach(/* ⑪の処理を書く */){
+foreach($goods as $g){
 	/*
 	 * ⑫POSTの「stock」について⑩の変数の値を使用して値を取り出す。
 	 * 半角数字以外の文字が設定されていないかを「is_numeric」関数を使用して確認する。
@@ -65,6 +73,7 @@ foreach(/* ⑪の処理を書く */){
 	}
 	
 	//㉒ ⑩で宣言した変数をインクリメントで値を1増やす。
+	$books1++;
 }
 
 /*
