@@ -10,26 +10,17 @@
 出荷する商品が選択されていません：商品が一つも選択されていない状態で出荷ボタンを押す
 */
 
-//①セッションを開始する
+session_start();
 
-//②SESSIONの「login」フラグがfalseか判定する。「login」フラグがfalseの場合はif文の中に入る。
-if (/* ②の処理を書く */){
-	//③SESSIONの「error2」に「ログインしてください」と設定する。
-	//④ログイン画面へ遷移する。
-}
+if ($_SESSION["login"]==false){
+	$_SESSION["error2"] = 'ログインしてください';
+	header("Location: login.php");
+	}
+$con = mysqli_connect("localhost" , "zaiko2019_yse" , "2019zaiko" , "zaiko2019_yse");
 
-//⑤データベースへ接続し、接続情報を変数に保存する
-$db['host'] = "localhost";  // DBサーバのURL
-$db['user'] = "zaiko2019_yse";  // ユーザー名
-$db['pass'] = "2019zaiko";  // ユーザー名のパスワード
-$db['dbname'] = "zaiko2019_yse";  // データベース名
-
-//⑥データベースで使用する文字コードを「UTF8」にする
-$dsn = sprintf('mysql: host=%s; dbname=%s; charset=utf8', $db['host'], $db['dbname']);
-//⑦書籍テーブルから書籍情報を取得するSQLを実行する。また実行結果を変数に保存する
-$pdo = connect();
-$st = $pdo->query("SELECT * FROM books");
-	$goods = $st->fetchAll();
+	mysqli_set_charset($con,"UTF8");
+	$sql = "select * from books";
+	$rst = mysqli_query($con,$sql) or die("select失敗".mysqli_error($con));
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -47,12 +38,8 @@ $st = $pdo->query("SELECT * FROM books");
 			<!-- エラーメッセージ表示 -->
 			<div id="error">
 				<?php
-				/*
-				 * ⑧SESSIONの「success」にメッセージが設定されているかを判定する。
-				 * 設定されていた場合はif文の中に入る。
-				 */ 
-				if(/* ⑧の処理を書く */){
-					//⑨SESSIONの「success」の中身を表示する。
+				if(!empty($_SESSION["success"])){
+					echo $_SESSION["success"];
 				}
 				?>
 			</div>
@@ -87,18 +74,16 @@ $st = $pdo->query("SELECT * FROM books");
 					</thead>
 					<tbody>
 						<?php
-						//⑩SQLの実行結果の変数から1レコードのデータを取り出す。レコードがない場合はループを終了する。
-						while($goods as $g){
-							//⑪extract変数を使用し、1レコードのデータを渡す。
-							extract($g);
-							echo "<tr id='book'>";
-							echo "<td id='check'><input type='checkbox' name='books[]'value=". ."></td>";
-							echo "<td id='id'><?php echo $g['id'] ?></td>";
-							echo "<td id='title'><?php echo $g['title'] ?></td>";
-							echo "<td id='author'><?php echo $g['author'] ?></td>";
-							echo "<td id='date'><?php echo $g['salesDate'] ?></td>";
-							echo "<td id='price'><?php echo $g['price'] ?></td>";
-							echo "<td id='stock'><?php echo $g['stock'] ?></td>";
+							while($data = mysqli_fetch_array($rst)){
+								extract($data);
+									echo "<tr id='book'>";
+									echo "<td id='check'><input type='checkbox' name='books[]'value=".$id."></td>";
+									echo "<td id='id'>$id</td>";
+									echo "<td id='title'>$title</td>";
+									echo "<td id='author'>$author</td>";
+									echo "<td id='date'>$salesDate</td>";
+									echo "<td id='price'>$price</td>";
+									echo "<td id='stock'>$stock</td>";
 
 							echo "</tr>";
 						}

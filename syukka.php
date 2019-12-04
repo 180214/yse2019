@@ -9,44 +9,31 @@
 出荷する個数が在庫数を超えています：出荷したい個数が在庫数を超えている
 数値以外が入力されています：入力された値に数字以外の文字が含まれている
 */
-/*
- * ①session_status()の結果が「PHP_SESSION_NONE」と一致するか判定する。
- * 一致した場合はif文の中に入る。
- */
-if (/* ①の処理を行う */) {
-	//②セッションを開始する
+if (session_status()==PHP_SESSION_NONE) {
+session_start ();
 }
 
-//③SESSIONの「login」フラグがfalseか判定する。「login」フラグがfalseの場合はif文の中に入る。
-if (/* ③の処理を書く */){
-	//④SESSIONの「error2」に「ログインしてください」と設定する。
-	//⑤ログイン画面へ遷移する。
+if ($_SESSION ["login"] == false){
+	$_SESSION ["error2"] = 'ログインしてください';
+	header ( "Location:login.php" );
 }
 
-//⑥データベースへ接続し、接続情報を変数に保存する
-$db['host'] = "localhost";  // DBサーバのURL
-$db['user'] = "zaiko2019_yse";  // ユーザー名
-$db['pass'] = "2019zaiko";  // ユーザー名のパスワード
-$db['dbname'] = "zaiko2019_yse";  // データベース名
-
-//⑦データベースで使用する文字コードを「UTF8」にする
-$dsn = sprintf('mysql: host=%s; dbname=%s; charset=utf8', $db['host'], $db['dbname']);
-//⑧POSTの「books」の値が空か判定する。空の場合はif文の中に入る。
-if(/* ⑧の処理を行う */){
-	//⑨SESSIONの「success」に「出荷する商品が選択されていません」と設定する。
-	//⑩在庫一覧画面へ遷移する。
+$con = mysqli_connect("localhost" , "zaiko2019_yse" , "2019zaiko" , "zaiko2019_yse");
+	mysqli_set_charset($con,"UTF8");
+if(empty ($_POST ["books"])){
+	$_SESSION ["success"] = '出荷する商品が選択されていません';
+	header ( "Location:zaiko_ichiran.php" );
 }
 
 function getId($id,$con){
-	/* 
-	 * ⑪書籍を取得するSQLを作成する実行する。
-	 * その際にWHERE句でメソッドの引数の$idに一致する書籍のみ取得する。
-	 * SQLの実行結果を変数に保存する。
-	 */
-$pdo = connect();
-$st = $pdo->query("SELECT * FROM books WHERE id='$id'")
-	//⑫実行した結果から1レコード取得し、returnで値を返す。
-return $goods = $st->fetchAll();
+		$sql = "select * from books where books.id=$id ";
+		$result = $con->query($sql);
+
+		if ($result->num_rows > 0) {
+			while($row = $result->fetch_assoc()) {
+				return $row;
+			}	
+		}
 }
 ?>
 <!DOCTYPE html>
@@ -76,13 +63,9 @@ return $goods = $st->fetchAll();
 		<!-- エラーメッセージ -->
 		<div id="error">
 		<?php
-		/*
-		 * ⑬SESSIONの「error」にメッセージが設定されているかを判定する。
-		 * 設定されていた場合はif文の中に入る。
-		 */ 
-		if(/* ⑬の処理を書く */){
-			//⑭SESSIONの「error」の中身を表示する。
-		}
+			if(! empty($_SESSION ["error2"])){
+				echo $_SESSION ["error2"];
+			}
 		?>
 		</div>
 		<div id="center">
@@ -99,12 +82,8 @@ return $goods = $st->fetchAll();
 					</tr>
 				</thead>
 				<?php 
-				/*
-				 * ⑮POSTの「books」から一つずつ値を取り出し、変数に保存する。
-				 */
-    				foreach($goods as $g){
-    					// ⑯「getId」関数を呼び出し、変数に戻り値を入れる。その際引数に⑮の処理で取得した値と⑥のDBの接続情報を渡す。
-    					$getId($g,$db['host']);
+				foreach( $_POST["books"] as $bookNo){
+				$rock= getId($bookNo,$con);
 				?>
 				<input type="hidden" value="<?php echo	$g['id'];?>" name="books[]">
 				<tr>
