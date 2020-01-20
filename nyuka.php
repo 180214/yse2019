@@ -86,12 +86,12 @@ foreach( $_POST["books"] as $bookNo){
 					$rock= getId($bookNo,$con);					?>
 					<input type="hidden" value="<?php echo	$rock["id"];?>" name="books[]">
 					<tr>
-						<td><?php echo	$g['id'];?></td>
-						<td><?php echo	$g['title'];?></td>
-						<td><?php echo	$g['author'];?></td>
-						<td><?php echo	$g['salesDate'];?></td>
-						<td><?php echo	$g['price'];?></td>
-						<td><?php echo	$g['stock'];?></td>
+						<td><?php echo	$rock['id'];?></td>
+						<td><?php echo	$rock['title'];?></td>
+						<td><?php echo	$rock['author'];?></td>
+						<td><?php echo	$rock['salesDate'];?></td>
+						<td><?php echo	$rock['price'];?></td>
+						<td><?php echo	$rock['stock'];?></td>
 						<td><input type='text' name='stock[]' size='5' maxlength='11' required></td>
 					</tr>
 					<?php
