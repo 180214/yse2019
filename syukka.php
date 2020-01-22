@@ -63,8 +63,8 @@ function getId($id,$con){
 		<!-- エラーメッセージ -->
 		<div id="error">
 		<?php
-			if(! empty($_SESSION ["error2"])){
-				echo $_SESSION ["error2"];
+			if(! empty($_SESSION ["error"])){
+				echo $_SESSION ["error"];
 			}
 		?>
 		</div>
@@ -85,7 +85,7 @@ function getId($id,$con){
 				foreach( $_POST["books"] as $bookNo){
 				$rock= getId($bookNo,$con);
 				?>
-				<input type="hidden" value="<?php echo	$g['id'];?>" name="books[]">
+				<input type="hidden" value="<?php echo	$rock['id'];?>" name="books[]">
 				<tr>
 						<td><?php echo	$rock['id'];?></td>
 						<td><?php echo	$rock['title'];?></td>

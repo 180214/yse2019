@@ -7,58 +7,67 @@
 【エラー一覧（エラー表示：発生条件）】
 なし
 */
-
-session_start();
-function getByid($id,$con){
-	$sql = "select * from books where books.id=$id ";
-		$result = $con->query($sql);
-
-		return $result->fetch_assoc();
-
-}
-
-function updateByid($id,$con,$total){
-	$sql = "UPDATE books SET stock = stock+$total WHERE books.id=$id ";
-}
-
-if ($_SESSION["login"] == false){
-	$_SESSION ["error2"] = 'ログインしてください';
-	header ( "Location:login.php" );
-}
-
- $con = mysqli_connect("localhost" , "zaiko2019_yse" , "2019zaiko" , "zaiko2019_yse");
-	mysqli_set_charset($con,"UTF8");
-$books1=0;
-foreach($_POST["books"] as $g){
-	if (is_numeric($_POST["stock"]== $books1)) {
-		$_SESSION["error"] = "数値以外が入力されています";
-		include'nyuka.php';
-		exit;
-	}
-		$rock= getByid($g,$con);
-		$total = $rock["stock"];
-	if($total>=100){
-		$_SESSION["error"] = "最大在庫数を超える数は入力できません";
-		include'nyuka.php';
-		exit;
-	}
 	
-	$books1++;
-}
-
-if(@$_POST['add']){
-$books1=0;
-	$books=$_POST["books"];
-	foreach($goods as $g){
-		$rock= getByid($g,$con);
-		$total = $rock["stock"]+$_POST["stock"] + $books1;
-		$result = updateByid($g, $con,$toral);
-		$books1++;
+	session_start();
+	function getByid($id,$con){
+		$sql = "select * from books where books.id=$id ";
+		$result = $con->query($sql);
+		if ($result->num_rows > 0) {
+			while($row = $result->fetch_assoc()) {
+				return $row;
+			}
+		}
+	}
+	function updateByid($id,$con,$total){
+		$sql="UPDATE books set stock=$total WHERE id=$id ";
+		return $result = $con->query($sql);		
 	}
 
-		$_SESSION["success"] = "入荷が完了しました";
-		header ('Location:zaiko_ichiran.php');
-}
+	if ($_SESSION["login"]!=true){
+		$_SESSION["error2"]="ログインしてください";
+		header ( "Location:login.php" );
+		exit();
+	}
+
+
+	$con = mysqli_connect("localhost" , "zaiko2019_yse" , "2019zaiko" , "zaiko2019_yse");
+	mysqli_set_charset($con,"UTF8");
+	$sql = "select * from books";
+	$rst = mysqli_query($con,$sql) or die("select失敗".mysqli_error($con));
+	
+	$sn=0;
+	foreach( $_POST["books"] as $bookNo){
+
+		if (!is_numeric($_POST["stock"][$sn])) {
+			$_SESSION['error']="数値以外が入力されています";
+			include("nyuka.php");
+			exit();
+		}
+
+		$rock= getByid($bookNo,$con);
+		$total=$rock["stock"]+$_POST["stock"][$sn];
+		if($total >100){
+			$_SESSION['error']="最大在庫数を超える数は入力できません";
+			include("nyuka.php");
+			exit();
+		}
+		$sn++;
+	}
+
+	if(@$_POST["add"]=="ok"){
+		$sn=0;
+		$result;
+		foreach( $_POST["books"] as $bookNo){
+			$rock= getByid($bookNo,$con);
+			$total=$rock["stock"]+$_POST["stock"][$sn];
+			$result= updateByid($bookNo,$con,$total);
+			$sn++;
+		}
+		if($result){
+			$_SESSION['success']="入荷が完了しました";
+			header("location:zaiko_ichiran.php?page=1");
+		}
+	}
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -83,22 +92,19 @@ $books1=0;
 						</tr>
 					</thead>
 					<tbody>
-						<?php
-$books1=0;
-						foreach($_POST["books"] as $q){
-						$rock= getByid($books1,$con);
-						?>
+						<?php 
+    				$sn=0;
+    				foreach( $_POST["books"] as $bookNo){
+					$rock= getByid($bookNo,$con);
+							?>
 						<tr>
-							<td><?php echo	$rock['title'];?></td>
-							<td><?php echo	$rock['stock'];?></td>
-							<td><?php echo	$_POST["stock"]=$books1;?></td>
+							<td><?php echo	$rock["title"];?></td>
+							<td><?php echo	$rock["stock"];?></td>
+							<td><?php echo	$_POST["stock"][$sn];?></td>
 						</tr>
-						<input type="hidden" name="books[]" value="<?php echo $q; ?>">
-						<input type="hidden" name="stock[]" value='<?php echo $books1=$_POST["stock"];?>'>
-						<?php
-							$books1++;
-						}
-						?>
+						<input type="hidden" name="books[]" value="<?php echo $bookNo?>">
+						<input type="hidden" name="stock[]" value='<?php echo $_POST["stock"][$sn];?>'>
+						<?php $sn++;}?>
 					</tbody>
 				</table>
 				<div id="kakunin">
