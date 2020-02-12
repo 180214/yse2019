@@ -54,7 +54,7 @@ $_SESSION["error2"]=null;
 		<?php
 		echo "<div id='error'>", $error, "</div>";
 		
-		echo "<div id='msg'>", $msg, "</div>";
+		echo "<div id='error'>", $msg, "</div>";
 		?>
 		<form action="login.php" method="post" id="log">
 			<p>
