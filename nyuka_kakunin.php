@@ -39,7 +39,7 @@
 	foreach( $_POST["books"] as $bookNo){
 
 		if (!is_numeric($_POST["stock"][$sn])) {
-			$_SESSION['error']="数値以外が入力されています";
+			$_SESSION["error"]="数値以外が入力されています";
 			include("nyuka.php");
 			exit();
 		}

@@ -45,7 +45,7 @@ foreach($_POST["books"] as $bookNo){
 		$rock= getByid($bookNo,$con);
 		$total = $rock["stock"]-$_POST["stock"][$sn];
 	if($total<0){
-		$_SESSION['error'] = "出荷する個数が在庫数を超えています";
+		$_SESSION["error"] = "出荷する個数が在庫数を超えています";
 		include("syukka.php");
 		exit();
 	}
